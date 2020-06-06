@@ -337,3 +337,76 @@ v<sub>1</sub>, ... , v<sub>n</sub>, then
 - replace the application with the body of the function f,
 - the actual paramteters v<sub>1</sub>, ..., v<sub>n</sub> replace the formal parameters of f.
 
+This can be formalized as a rewriting of the program itself:
+
+def f(x<sub>1</sub>, ..., x<sub>n</sub>) = B; ... f(v<sub>1</sub>, ..., v<sub>n</sub>) ->
+def f(x<sub>1</sub>, ..., x<sub>n</sub>) = B; ... [v<sub>1</sub>/x<sub>1</sub>, ..., v<sub>n</sub>/x<sub>n</sub>]B
+
+Here, [v<sub>1</sub>/x<sub>1</sub>, ..., v<sub>n</sub>/x<sub>n</sub>]B means:
+
+The expresssion B in which all occurrences of x<sub>i</sub>, have been replaced by v<sub>i</sub>.
+[v<sub>1</sub>/x<sub>1</sub>, ..., v<sub>n</sub>/x<sub>n</sub>] is called a substitution. 
+
+Consider gcd, the function tha computes the greatest comon divisor of two numbers.
+Here's an implementation of gcd using Euclid's algorithm
+```
+def gcd(a: Int, b: Int): Int = if (b==0) a else gcd(b, a % b)
+gcd(14, 21)
+-> if (21 == 0) 14 else gcd(21, 14 % 21)
+-> if (false) 14 else gcd(21, 14 % 21)
+-> gcd(21, 14 % 21)
+-> gcd(21, 14)
+-> if (14 == 0) 21 else gcd(14, 21 % 14)
+-> gcd(14, 7)
+-> gcd(7, 0)
+-> if (0 == 0) 7 else gcd(0, 7 % 0)
+-> 7
+```
+Consider factorial:
+```
+def factorial(n: Int): Int = if (n==0) 1 else n * factorial(n-1)
+factorial(4)
+-> if (4 == 0) 1 else 4 * factorial(4 - 1)
+-> 4 * factorial(3)
+-> 4 * (3 * factorial(2))
+-> 4 * (3 * (2 * factorial(1)))
+-> 4 * (3 * (2 * (1 * factorial(0)))
+-> 4 * (3 * (2 * (1 * 1)))
+->
+```
+One difference between the reduction sequences is that for gcd, the reduction sequence oscillates, 
+but for factorial, the reduction sequence gets longer and longer until we reduce it to the final 
+value.
+
+Implementation Consideration: If a function calls itself as its last action, the function's stack
+frame can be reused. This is called **tail recursion**.
+=> Tail recursive functions are iterative processes.
+In general, if the last action of a function consists of calling a function (which may be the same),
+one stack would be sufficient for both functions. Such calls are called **tail-calls**.
+
+In Scala, only directly recursive calls to the current function are optimized. One can require
+that a function is tail-recursive using a `@tailrec` annotation:
+```
+@tailrec
+def gcd(a: Int, b: Int): Int = ...
+```
+If the annotation is given, and the implementation of gcd were not tail recursive, an error
+would be issued.
+
+Question: Should every function be tail recursive. Well, not really. 
+The interest of tail recursion is mostly to avoid very deep recursive chains. 
+If the input data is such that these deep recursive chains could happen, then yes it's a good idea to reformulate your function to be tail recursive, to run in constant stack frame, so as to avoid stack overflow exceptions. 
+On the other hand, if your input data are not susceptible to deep recursive chains then clarity trumps efficiency every time, so write your function the clearest way you can. Which often is not recursive.
+
+> Premature optimisation is the source of all evil - Donald Knuth
+
+Exercise: Design a tail-recursive version of factorial
+```
+def factorial(n: Int): Int = {
+  def loop(acc: Int, n: Int): Int =
+    if (n == 0) acc
+    else loop(acc * n, n - 1)
+  loop(1, n)
+  }
+}
+```

@@ -16,6 +16,7 @@ The `Boolean` type maps to the JVM's primitive type `boolean`. But one could def
 
 ```
 package idealized.scala
+
 abstract class Boolean {
 	def ifThenElse[T] (t: => T, e: => T): T
 	// if (condition) t 
@@ -28,8 +29,8 @@ abstract class Boolean {
 	// x, else return false.
 	def || (x: => Boolean): Boolean = ifThenElse(true, x)
 	// if the condition that calls || is true then return true, else
-	// return false.
-	def unary_!: Boolean            = ifThenElse(false, true)
+	// return x.
+	def unary_!: Boolean = ifThenElse(false, true)
 	// if the condition that calls unary_! is true then return false,
 	// else return true
 
@@ -43,7 +44,7 @@ abstract class Boolean {
 }
 ```
 
-Here are constants `true` and `false` that go with `Boolean` in the `idealized.scala`:
+Here are constants `true` and `false` that go with `Boolean` in the package `idealized.scala`:
 
 ```
 package idealized.scala
@@ -59,7 +60,8 @@ object false extends Boolean {
 }
 ```
 
-Exercise
+Exercise:
+
 Provide an implementation of the comparison operator `<` in class 
 `idealized.scala.Boolean`.
 
@@ -67,8 +69,6 @@ Assume for this that `false < true`.
 
 ```
 def < (x: Boolean): Boolean = ifThenElse(false, x)
-
-
 ```
 
 Here is a partial specification of the class `scala.Int`.
@@ -77,12 +77,12 @@ class Int {
 	def + (that: Double): Double
 	def + (that: Float): Float
 	def + (that: Long): Long
-	def + (that: Int): Int  		// same for -, *, /, %
+	def + (that: Int): Int  		  // same for -, *, /, %
 
 	def << (cnt: Int): Int       	// same for >>, >>> 
 
 	def & (that: Long): Long
-	def & (that: Int): Int 			// same for |, ^
+	def & (that: Int): Int 			  // same for |, ^
 
 	def == (that: Double): Boolean
 	def == (that: Float): Boolean
@@ -93,7 +93,8 @@ class Int {
 We have seen that the operations that we would like to perfrom on `scala.Int` can be expressed as methods above. However, in order to show that `scala.Int` can be represented as objects, we will still need to implement these functions.  
 
 
-Exercise
+Exercise:
+
 Provide an implmentation fo the abstract class `Nat` that represents non-negative integers.
 ```
 abstract class Nat {
@@ -159,6 +160,7 @@ The function type `A => B` is just an abbreviation for the class `scala.Function
 
 ```
 package scala
+
 trait Function[A, B] {
 	def apply(x: A): B
 }
@@ -211,7 +213,7 @@ def f(x: Int): Boolean = ...
 ```
 is not itself a function value.
 
-But if `f` used in a place where a Function type is expected, it is converted automaically to the function value
+But if `f` used in a place where a Function type is expected, it is converted automatically to the function value
 
 ```
 (x: Int) => f(x)
@@ -273,7 +275,7 @@ Consider the method `assertAllPos` (assert all positive) which
 - returns the `IntSet` itself if all elements are positive
 - throws an exception otherwise
 
-What would the best type you can give to `assertAllPos`? Maybe:
+What would be the best type you can give to `assertAllPos`? Maybe:
 ```
 def assertAllPos(s: IntSet): IntSet
 ```
@@ -287,7 +289,7 @@ A way to express this is:
 def assertAllPos[S <: IntSet](r: S): S = ...
 ``` 
 
-Here, `<: IntSet` is a n *upper bound* of the type parameter `S`:
+Here, `<: IntSet` is an *upper bound* of the type parameter `S`:
 
 It means that `S` can be instantiated only for types that conform to `IntSet`.
 
@@ -319,7 +321,7 @@ Reminder:
 Arrays in Java are covariant, so one could have: `NonEmpty[] <: IntSet[]`
 
 But covariant array typing causes problems.
-To see why, consider the JAva code below:
+To see why, consider the Java code below:
 ```
 NonEmpty[] a = new NonEmpty[]{new NonEmpty(1, Empty, Empty))}
 IntSet[] b = a
@@ -333,7 +335,7 @@ The 3rd line will throw a runtime ArrayStoreException!
 
 When does it make sense for a type to be a subtype of another? And when should that rather not be the case?
 
-The foloowing principle, stated by Barbara Liskov, tells us when a type can be a subtype of another.
+The following principle, stated by Barbara Liskov, tells us when a type can be a subtype of another.
 
 > If A <: B, then everything one can do with a value of type B, one should also be able to do with a value of type A.
 
@@ -342,10 +344,11 @@ The actual definition Liskov used is a bit more formal. It says:
 > Let `q(x)` be a property provable about objects `x` of type `B`. Then `q(y)` should be provable for objects `y` of type `A` where `A <: B`.
 
 Exercise:
+
 The problematic array example would be written as follows in Scala:
 
 ```
-val a: Array[NonEmpty] =  Array(new NonEmpty(1, Empty, Empty, Empty))
+val a: Array[NonEmpty] = Array(new NonEmpty(1, Empty, Empty, Empty))
 val b: Array[IntSet] = a
 b(0) = Empty
 val s: NonEmpty = a(0)
@@ -382,9 +385,9 @@ class C[-A] { ... } // C is contravariant
 class C[A] { ... } // C is nonvariant
 ```
 
-Exercise.
+Exercise:
 
-Say you have two function types:
+Say you have two function types,
 ```
 type A = IntSet => NonEmpty
 type B = NonEmpty => IntSet
@@ -413,7 +416,7 @@ We have seen in the array example that the combination of covariance with certai
 
 In this case the problematic operation was the update operation on an array.
 
-If we turn `Array` into a class, and `update` into a method, it would lok like this:
+If we turn `Array` into a class, and `update` into a method, it would look like this:
 ```
 class Array[+T] {
 	def update(x: T) ...
@@ -576,7 +579,7 @@ def eval(e: Expr): Int = {
 	else throw new Error("Unkown expression " + e)
 }
 ```
-Problem: Writin all these classification and accessor functions quickly becomes 
+Problem: Writing all these classification and accessor functions quickly becomes 
 tedious!
 
 So, what happens if you want to add new expression forms, say
@@ -584,7 +587,7 @@ So, what happens if you want to add new expression forms, say
 class Prod(e1: Expr, e2: Expr) extends Expr
 class Var(x: String) extends Expr
 ```
-You need to add methods for classification and acess to all classes defined above.
+You need to add methods for classification and access to all classes defined above.
 
 To integrate `Prod` and `Var` into the hierarchy, how many new method definitions do you need?
 
@@ -602,9 +605,11 @@ A "hacky" solution could use type tests and type casts.
 
 Scala let's you do these using methods defined in class `Any`:
 
+```
 def isInstanceOf[T]: Boolean // checks whether this object's type conforms to 'T'
 def asInstanceOf[T]: T       // treats this object as an instance of type 'T'
-							 // throws 'ClassCastException' if it isn't.
+              							 // throws 'ClassCastException' if it isn't.
+```
 
 These correspond to Java's type tests and casts
 
@@ -631,6 +636,7 @@ def eval(e: Expr): Int =
 Assessment of this solution:
 
 (+) no need for classification methods, access methods only for classes where the value is defined.
+
 (-) low-level and potentially unsafe. In general, we may not not know at runtime whether type cast will succeed.
 
 
@@ -654,7 +660,7 @@ class Sum(e1: Expr, e2: Expr) extends Expr {
 ```
 
 But what happens if you'd like to display expressions now?
-You have to define new methods in all the subclasses, which may be do-able in a large codebase.
+You have to define new methods in all the subclasses, which may not be do-able in a large codebase.
 
 And what if you want to simplify the expressions, say using the rule:
 
@@ -681,7 +687,7 @@ Observation: the sole purpose of test and accessor functions is to reverse the c
 - which subclass was used?
 - what were the arguments of the constuctor?
 
-This situation is so common that many functional languages, Scala included, automate it.
+This situation is so common that many functional languages, Scala included, automates it.
 
 A *case class* definition is similar to a normal class definition, except that it is preceded by the modifier *case*. For example:
 
@@ -739,7 +745,7 @@ Variables always begin with a lowercase letter.
  
 The same variable name can only appear once in a pattern. So, `Sum(x, x)` is not a legal pattern.
 
-Names of constrants begin with a capital letter, with the exception of the reserved words `null`, `true`, `false`.
+Names of constants begin with a capital letter, with the exception of the reserved words `null`, `true`, `false`.
 
 An expression of the form `e match { case p1 => e1 ... case pn => en}`
 
@@ -850,7 +856,7 @@ Example.
 val nums = 1 :: 2 :: 3 :: 4 :: Nil
 ```
 
-Operators ending in  ":" are also different in the way that they are seen as method calls of the `right-hand` operand.
+Operators ending in  "::" are also different in the way that they are seen as method calls of the `right-hand` operand.
 
 So the expression above is equivalent to
 ```
@@ -900,15 +906,18 @@ What is the condition that describes most accurately the length `L` of the lists
 - L >= 4
 - L >= 5
 
-Suppose we wnat to sort a list of numbers in ascending order:
+Suppose we want to sort a list of numbers in ascending order:
 - One way to sort the list `List(7, 3, 9, 2)` is to sort the tail `List(3, 9, 2)` to obtain `List(2, 3, 9)`.
 - The next step is to insert the head 7 in the right place to obtain the result `List(2, 3, 7, 9)`.
 
 This idea describes Insertion Sort:
+
+```
 def isort(xs: List[Int]): List[Int] = xs match {
 	case List() => List()
 	case y :: ys => insert(y, isort(ys))
 }
+```
 
 Exercise.
 

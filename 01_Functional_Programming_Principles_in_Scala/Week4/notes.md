@@ -530,7 +530,7 @@ Possible answers:
 - does not type check
 - List[NonEmpty]
 - List[Empty]
-- List[IntSet]  (Correct. T can be any supertype of NonEmpty and elem must have a type of this supertype. Since Empty is not a supertype NoneEmpty, type inference will choose the next higher type for U, IntSet)
+- List[IntSet]  (Correct. U can be any supertype of NonEmpty and elem must have a type of this supertype. Since Empty is not a supertype NonEmpty, type inference will choose the next higher type for U, IntSet)
 - List[Any]
 
 ---

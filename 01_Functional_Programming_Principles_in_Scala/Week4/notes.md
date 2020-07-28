@@ -933,7 +933,7 @@ Solution:
 ```
 def insert(x: Int, xs: List[Int]): List[Int] = xs match {
 	case List() => List(x)
-	case y :: ys => if (x > y): y :: insert(x, ys) else: x :: xs
+	case y :: ys => if (x > y) y :: insert(x, ys) else x :: xs
 }
 ```
 What is the worst-case complexity of insertion sort relative to the length of the input list `N`?

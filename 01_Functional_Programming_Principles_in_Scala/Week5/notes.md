@@ -164,11 +164,12 @@ This works analogously for tuples with more than two elements.
 
 ## Translation of Tuples
 
-A tuple type `(T<sub>1</sub>, ..., T<sub>n</sub>)` is an abbreviation of the parameterized type `scala.Tuplen[T<sub></sub>, ..., T<sub>n</sub>]`.
+A tuple type `(T <sub>1</sub>, ..., T <sub>n</sub>)` is an abbreviation of the parameterized type `scala.Tuplen[T <sub></sub>, ..., T <sub>n</sub>]`.
 
-A tuple expression `(e<sub>1</sub>, ..., e<sub>n</sub>)` is equivalent to the function application `scala.Tuplene(<sub>1</sub>, ..., e<sub>n</sub>)`
+A tuple expression `(e <sub>1</sub>, ..., e <sub>n</sub>)` is equivalent to the function application `scala.Tuplen(e <sub>1</sub>, ..., e <sub>n</sub>)`
 
-A tuple pattern `(p<sub>1</sub>, ..., p<sub>n</sub>)` is equivalent to the constructor pattern `scala.Tuplen(p<sub>1</sub>, ..., p<sub>n</sub>)`.
+A tuple pattern `(p <sub>1</sub>, ..., p <sub>n</sub>)` is equivalent to the constructor pattern `scala.Tuplen(p <sub>1</sub>, ..., p <sub>n</sub>)`.
+
 
 
 
